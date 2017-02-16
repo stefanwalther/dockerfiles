@@ -1,0 +1,11 @@
+{
+  "name": "consul-playground",
+  "version": "1.0.0",
+  "description": "Consul playground",
+  "author": "Stefan Walther",
+  "license": "MIT",
+  "scripts": {
+    "dc-dev-up": "source ./env.sh && docker-compose --f=./docker-compose.yml up --build",
+    "dc-dev-down": "docker-compose --f=./docker-compose.yml down"
+  }
+}

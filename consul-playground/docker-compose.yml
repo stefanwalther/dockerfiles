@@ -1,0 +1,72 @@
+version: "2"
+
+networks:
+  local_dev_network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      - subnet: 172.20.0.0/24
+        gateway: 172.20.0.1
+
+services:
+  consul:
+    image:  gliderlabs/consul-server:latest
+    restart: always
+    command: "-server -bootstrap" #-bootstrap-expect 1
+    container_name: consul
+    environment:
+      SERVICE_8500_NAME: 'consul'
+      SERVICE_53_IGNORE: 'yes'
+      SERVICE_8300_IGNORE: 'yes'
+      SERVICE_8301_IGNORE: 'yes'
+      SERVICE_8302_IGNORE: 'yes'
+      SERVICE_8400_IGNORE: 'yes'
+    ports:
+      - 8500:8500
+    networks:
+      local_dev_network:
+        ipv4_address: 172.20.0.254
+
+  registrator:
+    image: gliderlabs/registrator:latest
+    restart: always
+    command: "consul://consul:8500"
+    restart: always
+    container_name: registrator
+    depends_on:
+      - consul
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock
+    networks:
+      - local_dev_network
+
+  dnsmasq:
+    image: andyshinn/dnsmasq:latest
+    restart: always
+    depends_on:
+      - consul
+    container_name: dnsmasq
+    environment:
+      - SERVICE_IGNORE=true
+    ports:
+      - 53:53/tcp
+      - 53:53/udp
+    cap_add:
+      - NET_ADMIN
+    command: -S /consul/172.20.0.254#8600
+    networks:
+      local_dev_network:
+         ipv4_address: 172.20.0.253
+
+    vault:
+      image: qlik/vault-dev:latest
+      container_name: vault
+      restart: always
+      hostname: vault
+      environment:
+        - SERVICE_8200_NAME=vault
+      ports:
+        - "8200:8200"
+      networks:
+        - local_dev_network

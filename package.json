@@ -1,0 +1,8 @@
+{
+  "name": "dockerfiles",
+  "version": "0.1.0",
+  "description": "Some dockerfiles & docker experiments.",
+  "repository": "git@github.com:stefanwalther/dockerfiles.git",
+  "author": "Stefan Walther",
+  "license": "MIT"
+}
