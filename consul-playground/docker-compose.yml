@@ -1,7 +1,7 @@
 version: "2"
 
 networks:
-  local_dev_network:
+  local_network:
     driver: bridge
     ipam:
       driver: default
@@ -25,7 +25,7 @@ services:
     ports:
       - 8500:8500
     networks:
-      local_dev_network:
+      local_network:
         ipv4_address: 172.20.0.254
 
   registrator:
@@ -39,7 +39,7 @@ services:
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock
     networks:
-      - local_dev_network
+      - local_network
 
   dnsmasq:
     image: andyshinn/dnsmasq:latest
@@ -56,11 +56,11 @@ services:
       - NET_ADMIN
     command: -S /consul/172.20.0.254#8600
     networks:
-      local_dev_network:
+      local_network:
          ipv4_address: 172.20.0.253
 
     vault:
-      image: qlik/vault-dev:latest
+      image: vault
       container_name: vault
       restart: always
       hostname: vault
@@ -69,4 +69,4 @@ services:
       ports:
         - "8200:8200"
       networks:
-        - local_dev_network
+        - local_network
