@@ -1,0 +1,11 @@
+{
+  "name": "rancher",
+  "version": "0.1.0",
+  "description": "Experiments with rancher.",
+  "author": "Stefan Walther",
+  "license": "MIT",
+  "scripts": {
+    "dc-up": "docker-compose up",
+    "dc-down": "docker-compose down"
+  }
+}
