@@ -1,13 +1,13 @@
 # Consult playground
 
-## Run
+## Build/Stop services using docker-compose
 
 ```sh
-yarn run dc-dev-up
+yarn dc-dev-up
 ```
 
 ```sh
-yarn run dc-dev-down
+yarn dc-dev-down
 ```
 
 ## Reference Links:
