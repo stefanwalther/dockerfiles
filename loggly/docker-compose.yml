@@ -1,0 +1,18 @@
+version: "2"
+
+services:
+
+  logspout-loggly:
+    image: iamatypeofwalrus/logspout-loggly
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock
+    environment:
+      LOGGLY_TOKEN: ${LOGGLY_TOKEN}
+      LOGGLY_TAGS: Docker
+      FILTER_NAME:
+
+  rancher:
+      image: rancher/server:latest
+      ports:
+        - 8080:8080
+
