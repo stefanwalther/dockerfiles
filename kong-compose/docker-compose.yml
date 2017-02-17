@@ -38,8 +38,8 @@ nginx-lb:
       /bin/containerpilot
       -config file:///etc/containerpilot/containerpilot.json
       nginx -g "daemon off;"
-# Kong Database
 
+# Kong Database
 kong-database:
   image: postgres:9.4
   ports:
@@ -49,7 +49,6 @@ kong-database:
     - POSTGRES_DB=kong
 
 # Kong
-
 kong:
   build: kong/
   restart: always

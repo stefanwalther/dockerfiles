@@ -1,0 +1,35 @@
+version: "2"
+
+services:
+  postgres:
+    image: postgres:9.4
+    container_name: kong-database
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=kong
+      - POSTGRES_DB=kong
+    volumes:
+      - "db-data:/var/lib/postgresql/data"
+  web:
+    image: mashape/kong:0.8.0
+    container_name: kong
+    environment:
+      - DATABASE=postgres
+    restart: always
+    ports:
+      - "8000:8000"
+      - "443:8443"
+      - "8001:8001"
+      - "7946:7946"
+      - "7946:7946/udp"
+    links:
+      - postgres
+  ui:
+    image: pgbi/kong-dashboard
+    container_name: kong-dashboard
+    ports:
+      - "8080:8080"
+
+volumes:
+  db-data:
