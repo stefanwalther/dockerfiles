@@ -1,23 +1,29 @@
 #http://blog.toast38coza.me/up-and-running-with-kong-and-docker/
 # Try this: https://mhdzaherghaibeh.name/2017/02/02/docker-compose-wait-dont-run-it-now/
 
-version: "2"
+version: "2.1"
 
 services:
   kong-database:
-    image: postgres:9.4
+    build:
+      context: .
     container_name: kong-database
     ports:
       - "5432:5432"
     environment:
       - POSTGRES_USER=kong
       - POSTGRES_DB=kong
-    volumes:
-      - "db-data:/var/lib/postgresql/data"
+#    volumes:
+#      - "db-data:/var/lib/postgresql/data"
+    healthcheck:
+      test: ["CMD", "/usr/local/bin/healthcheck.sh"]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+
 
   kong:
-    build:
-      context: .
+    image: kong:0.9.9
     container_name: kong
     restart: always
     environment:
@@ -29,18 +35,19 @@ services:
       - "8001:8001"
       - "7946:7946"
       - "7946:7946/udp"
-    links:
-      - kong-database:kong-database
-    command: ["./wait-for-it.sh", "kong-database:5432", "--", "docker-entrypoint.sh"]
-
-  ui:
-    image: pgbi/kong-dashboard
-    container_name: kong-dashboard
-    ports:
-      - "8080:8080"
-    links:
-      - kong-database
-      - kong
+    depends_on:
+      kong-database:
+        condition: service_healthy
+#
+#  ui:
+#    image: pgbi/kong-dashboard
+#    container_name: kong-dashboard
+#    ports:
+#      - "8080:8080"
+#    links:
+#      - kong-database
+#      - kong
+#
 
 volumes:
   db-data:

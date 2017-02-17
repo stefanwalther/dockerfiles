@@ -1,9 +1,7 @@
-FROM kong:0.9.9
+FROM postgres:9.4
 
-ENV KONG_VERSION 0.9.9
+COPY healthcheck.sh /usr/local/bin/
 
-COPY wait-for-it.sh /
+RUN chmod -R 700 /usr/local/bin/healthcheck.sh
 
-RUN chmod +x /wait-for-it.sh
-
-CMD ["kong", "start"]
+HEALTHCHECK CMD ["/usr/local/bin/healthcheck.sh"]
