@@ -1,0 +1,11 @@
+{
+  "name": "kong",
+  "version": "0.1.0",
+  "description": "Kong playground.",
+  "author": "Stefan Walther",
+  "license": "MIT",
+  "scripts": {
+    "dc-up": "docker-compose up --build",
+    "dc-down": "docker-compose down"
+  }
+}
