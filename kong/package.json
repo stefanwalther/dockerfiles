@@ -5,7 +5,7 @@
   "author": "Stefan Walther",
   "license": "MIT",
   "scripts": {
-    "dc-up": "docker-compose up --build",
+    "dc-up": "docker-compose up --build --remove-orphans --force-recreate",
     "dc-down": "docker-compose down"
   }
 }
