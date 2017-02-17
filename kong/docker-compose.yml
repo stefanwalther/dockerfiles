@@ -5,8 +5,7 @@ version: "2.1"
 
 services:
   kong-database:
-    build:
-      context: .
+    image: postgres:9.4
     container_name: kong-database
     ports:
       - "5432:5432"
@@ -15,11 +14,6 @@ services:
       - POSTGRES_DB=kong
 #    volumes:
 #      - "db-data:/var/lib/postgresql/data"
-    healthcheck:
-      test: ["CMD", "/usr/local/bin/healthcheck.sh"]
-      interval: 10s
-      timeout: 10s
-      retries: 3
 
 
   kong:
@@ -27,6 +21,10 @@ services:
     container_name: kong
     restart: always
     environment:
+      - WAIT_COMMAND=[ $$(curl --write-out %{http_code} --silent --output /dev/null http://kong-database:5432) = 200 ]
+      - WAIT_START_CMD=kong start
+      - WAIT_SLEEP=2
+      - WAIT_LOOPS=20
       - KONG_DATABASE=postgres
       - KONG_PG_HOST=kong-database
     ports:
@@ -35,9 +33,10 @@ services:
       - "8001:8001"
       - "7946:7946"
       - "7946:7946/udp"
-    depends_on:
-      kong-database:
-        condition: service_healthy
+    links:
+      - kong-database
+    command: sh wait_to_start.sh
+
 #
 #  ui:
 #    image: pgbi/kong-dashboard
