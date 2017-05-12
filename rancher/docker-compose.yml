@@ -2,6 +2,13 @@ version: '2'
 
 services:
   rancher:
-    image: rancher/server:latest
+    image: rancher/server:v1.4.1
+    restart: always
     ports:
       - 8080:8080
+    volumes:
+      - rancher-data-volume:/var/lib/mysql
+
+# See for a good description: https://www.linux.com/learn/docker-volumes-and-networks-compose
+volumes:
+  rancher-data-volume:
